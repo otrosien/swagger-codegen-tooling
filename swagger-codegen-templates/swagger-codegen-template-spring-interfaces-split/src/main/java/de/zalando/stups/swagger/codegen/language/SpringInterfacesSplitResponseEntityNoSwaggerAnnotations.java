@@ -15,11 +15,6 @@
  */
 package de.zalando.stups.swagger.codegen.language;
 
-import java.util.Map;
-
-import io.swagger.codegen.CodegenModel;
-import io.swagger.models.Model;
-
 /**
  * https://github.com/swagger-api/swagger-codegen/blob/master/modules/swagger-
  * codegen/src/main/java/com/wordnik/swagger/codegen/languages/
