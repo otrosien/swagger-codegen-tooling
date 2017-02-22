@@ -44,7 +44,7 @@ import io.swagger.parser.SwaggerParser;
  */
 public class StandaloneCodegenerator {
 
-    private Map<String, CodegenConfig> configs = new HashMap<String, CodegenConfig>();
+    private Map<String, CodegenConfig> configs = new HashMap<>();
 
     private CodegeneratorLogger codeGeneratorLogger = new SystemOutCodegeneratorLogger();
 
@@ -89,7 +89,6 @@ public class StandaloneCodegenerator {
         //
         final ClientOptInput clientOptInput = new ClientOptInput();
         final ClientOpts clientOpts = new ClientOpts();
-        Swagger swagger = null;
 
         getLog().info("Generate for language : " + language);
 
@@ -99,6 +98,7 @@ public class StandaloneCodegenerator {
         }
 
         codegenConfig.additionalProperties().putAll(additionalProperties);
+        codegenConfig.additionalProperties().put("modelDocs", false);
 
         if (codegenConfig instanceof ConfigurableCodegenConfig) {
 
@@ -148,7 +148,7 @@ public class StandaloneCodegenerator {
         clientOptInput.setConfig(codegenConfig);
         clientOptInput.getConfig().setOutputDir(outputDirectory.getAbsolutePath());
 
-        swagger = new SwaggerParser().read(this.apiFile, clientOptInput.getAuthorizationValues(), true);
+        final Swagger swagger = new SwaggerParser().read(this.apiFile, clientOptInput.getAuthorizationValues(), true);
 
         if (skipApigeneration) {
             getLog().info("API-GENERATION DISABLED ...");
@@ -177,10 +177,6 @@ public class StandaloneCodegenerator {
             final DefaultGenerator generator = (DefaultGenerator) new DefaultGenerator().opts(clientOptInput);
             final List<File> generatedFiles = generator.generate();
             getLog().info(generatedFiles.size() + " generated Files");
-            // updated to 2.1.4
-            // if (CodeGenStatus.FAILED.equals(generator.status)) {
-            // throw new CodegenerationException("Codegen failed by 'status'");
-            // }
         } catch (final Exception e) {
             throw new CodegenerationException(e.getMessage(), e);
         }
@@ -225,18 +221,10 @@ public class StandaloneCodegenerator {
 
     protected void prepare() {
         final List<CodegenConfig> extensions = getExtensions();
-        final StringBuilder sb = new StringBuilder();
 
         for (final CodegenConfig config : extensions) {
-            if (sb.toString().length() != 0) {
-                sb.append(", ");
-            }
-
-            sb.append(config.getName());
             getLog().info("register config : '" + config.getName() + "' with class : " + config.getClass().getName());
             configs.put(config.getName(), config);
-            // do not know
-            // configString = sb.toString();
         }
     }
 
@@ -258,7 +246,7 @@ public class StandaloneCodegenerator {
 
     private List<CodegenConfig> getExtensions() {
         final ServiceLoader<CodegenConfig> loader = ServiceLoader.load(CodegenConfig.class);
-        final List<CodegenConfig> output = new ArrayList<CodegenConfig>();
+        final List<CodegenConfig> output = new ArrayList<>();
         final Iterator<CodegenConfig> itr = loader.iterator();
         while (itr.hasNext()) {
             output.add(itr.next());
@@ -289,7 +277,7 @@ public class StandaloneCodegenerator {
 
         private boolean enableBuilderSupport = false;
 
-        private List<String> excludedModels = new ArrayList<String>(0);
+        private List<String> excludedModels = new ArrayList<>(0);
 
         private Map<String, Object> additionalProperties = ImmutableMap.of();
 

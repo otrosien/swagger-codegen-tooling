@@ -22,8 +22,6 @@ import org.junit.Test;
 import org.zalando.stups.swagger.codegen.CodegenerationException;
 import org.zalando.stups.swagger.codegen.StandaloneCodegenerator;
 
-import com.google.common.collect.Lists;
-
 public class SpringInterfacesGeneratorTest {
     @Test
     public void testGenerationFromJsonResponseEntityNoAnnotations() throws CodegenerationException {
